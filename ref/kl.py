@@ -95,6 +95,7 @@ def main(args):
 
     model = llama_cpp.Llama(model_path=args.model, n_ctx=ctx, n_batch=args.n_batch,
         logits_all=True, n_gpu_layers=args.n_gpu_layers, verbose=args.verbose)
+    
     model_name = os.path.split(args.model)[1]
     # 创建 llama.cpp 推理对象，并打开 logits_all 以便拿到每个 token 的原始 logits。
 
@@ -105,6 +106,7 @@ def main(args):
         print(f"Computing logits from text file: {args.text_path}")
         tokens = model.tokenize(prompt.encode('utf-8'))
         bos = model.token_bos()
+        # 处理文本开头的特殊 token
         b = 1 if bos is not None else 0
         tokens = [tokens[i:i+ctx-b] for i in range(0, len(tokens), ctx-b)]
         random.seed(123)
